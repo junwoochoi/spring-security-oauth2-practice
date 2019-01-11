@@ -3,6 +3,7 @@ package junu.demo.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -23,6 +24,9 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserDetailsService userService;
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         //연습이기 떄문에 클라이언트와 시크릿 키는 아무거나 넣었음...실제론 이렇게하면 절대 X
@@ -39,6 +43,7 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.tokenStore(tokenStore)
+                .userDetailsService(userService)
                 .authenticationManager(authenticationManager);
     }
 }
