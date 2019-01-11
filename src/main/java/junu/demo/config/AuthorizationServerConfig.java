@@ -3,6 +3,7 @@ package junu.demo.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -19,13 +20,16 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         //연습이기 떄문에 클라이언트와 시크릿 키는 아무거나 넣었음...실제론 이렇게하면 절대 X
         clients
                 .inMemory()
                 .withClient("junu-client")
-                .secret("junu-secret")
+                .secret(passwordEncoder.encode("junu-secret"))
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
                 .scopes("read", "write", "trust")
                 .accessTokenValiditySeconds(1*60*60)
